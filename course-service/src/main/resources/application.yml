@@ -1,0 +1,44 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: course-service
+
+  aop:
+    # fuerza cglib (clases) en vez de proxies por interfaz
+    # asi el aspect engancha sin sorpresas aunque no haya interfaces
+    proxy-target-class: true
+
+  datasource:
+    # misma bd compartida que usa batch-import
+    # h2 en tcp server (9092) con fichero en ../shared-db/coursesdb
+    url: jdbc:h2:tcp://localhost:9092/../shared-db/coursesdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      # update: crea/actualiza tablas sin tirar datos
+      ddl-auto: update
+
+  # este micro no ejecuta batch jobs
+  # desactivo para que no intente crear tablas BATCH_* ni lanzar jobs
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
+
+  h2:
+    console:
+      # consola web embebida (aparte de la que levanta H2ServerConfig)
+      # util para mirar rapido tablas en local
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    # para ver trazas del aspecto si hace falta depurar
+    org.springframework.aop: DEBUG
