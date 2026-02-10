@@ -1,0 +1,30 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: batch-import
+
+  datasource:
+    # h2 en modo server (tcp), apuntando a una bd "compartida" fuera del modulo
+    # el path ../shared-db/coursesdb significa: carpeta shared-db al lado del repo (o un nivel arriba segun ejecucion)
+    # DB_CLOSE_DELAY=-1 mantiene la bd viva mientras exista la jvm
+    # DB_CLOSE_ON_EXIT=FALSE evita que h2 cierre la bd al parar la app
+    url: jdbc:h2:tcp://localhost:9092/../shared-db/coursesdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      # update: crea/actualiza tablas segun entidades, sin borrar datos
+      ddl-auto: update
+
+  batch:
+    jdbc:
+      # batch si necesita sus tablas internas (BATCH_JOB_INSTANCE, etc)
+      # always para que funcione sin pelearse con scripts manuales
+      initialize-schema: always
+    job:
+      # true: al arrancar la app, spring intenta lanzar los jobs detectados
+      enabled: true
