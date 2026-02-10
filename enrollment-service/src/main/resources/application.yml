@@ -1,0 +1,25 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: enrollment-service
+
+  datasource:
+    # misma bd h2 tcp compartida con course-service y batch-import
+    # todos los micros apuntan al mismo fichero
+    url: jdbc:h2:tcp://localhost:9092/../shared-db/coursesdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      # actualiza esquema sin borrar datos
+      ddl-auto: update
+
+  h2:
+    console:
+      # consola embebida para inspeccion rapida
+      enabled: true
+      path: /h2-console
